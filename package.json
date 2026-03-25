@@ -1,0 +1,32 @@
+{
+  "name": "tailwispr",
+  "version": "0.1.0",
+  "description": "Turn your phone into a wireless microphone for your computer over Tailscale",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "setup": "bash setup.sh"
+  },
+  "keywords": [
+    "tailscale",
+    "microphone",
+    "audio",
+    "streaming",
+    "wispr",
+    "voice",
+    "remote-mic",
+    "virtual-audio"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mitchfitzsimmons/tailwispr"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

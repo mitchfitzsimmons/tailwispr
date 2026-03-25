@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>TailWispr</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- PIN Screen -->
+  <div id="pin-screen" class="screen hidden">
+    <div class="pin-container">
+      <h1>TailWispr</h1>
+      <p>Enter PIN to connect</p>
+      <input type="number" id="pin-input" maxlength="6" placeholder="PIN" inputmode="numeric" autocomplete="off">
+      <button id="pin-submit" class="action-button">Connect</button>
+      <p id="pin-error" class="error-text hidden"></p>
+    </div>
+  </div>
+
+  <!-- Main Screen -->
+  <div id="main-screen" class="screen hidden">
+    <header>
+      <h1>TailWispr</h1>
+      <div id="connection-status" class="status-pill connecting">Connecting...</div>
+    </header>
+
+    <div id="vu-meter-container">
+      <canvas id="vu-meter"></canvas>
+    </div>
+
+    <div id="wispr-mode" class="mode-toggle hidden">
+      <label class="toggle-label">
+        <input type="checkbox" id="wispr-auto" checked>
+        <span class="toggle-switch"></span>
+        <span class="toggle-text">Auto-trigger Wispr with mic</span>
+      </label>
+    </div>
+
+    <button id="mic-toggle" class="mic-button">
+      <span id="mic-icon" class="mic-icon">&#x1F399;</span>
+      <span id="mic-label">Tap to Start</span>
+    </button>
+
+    <div id="gain-control">
+      <label for="gain-slider">Gain</label>
+      <input type="range" id="gain-slider" min="100" max="500" value="100" step="1">
+      <span id="gain-value">100%</span>
+    </div>
+
+
+    <footer>
+      <span id="latency-display">--</span>
+      <span id="device-name">--</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "port": 3000,
+  "sampleRate": 48000,
+  "channels": 1,
+  "bufferSize": 4096,
+  "audioDevice": null,
+  "wisprEnabled": true,
+  "pin": null
+}
