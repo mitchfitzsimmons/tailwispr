@@ -37,7 +37,7 @@ No apps to install on your phone. Just a browser.
 | [BlackHole](https://existential.audio/blackhole/) | Creates a virtual "microphone" that apps can select as their audio input | `brew install blackhole-2ch` | Not needed — PulseAudio handles this natively |
 | [Tailscale](https://tailscale.com/download) | Connects your phone and computer across different networks | `brew install tailscale` | `curl -fsSL https://tailscale.com/install.sh \| sh` |
 
-> **Note (macOS):** After installing BlackHole, you may need to restart your computer for the virtual audio device to appear.
+> **Note (macOS):** After installing BlackHole, macOS sometimes doesn't load the driver right away. If `setup.sh` can't find a virtual audio device, reload CoreAudio with `sudo killall coreaudiod` (cuts audio for ~1s), then re-run setup. A full reboot also works.
 
 ## Quick Start
 
@@ -121,12 +121,21 @@ You also need the Tailscale CLI installed (`brew install tailscale`) — the Mac
 
 **"No virtual audio device found"**
 - macOS: Install BlackHole: `brew install blackhole-2ch`
-- You may need to restart after installing
+- If already installed but still not detected, macOS hasn't loaded the driver yet. Reload CoreAudio: `sudo killall coreaudiod` (audio cuts out for ~1s), then re-run `bash setup.sh`. If it still doesn't appear, reboot.
+- Verify the driver is on disk: `ls /Library/Audio/Plug-Ins/HAL/ | grep -i blackhole`
 
 **"Cannot access microphone" on phone**
 - Make sure you're using HTTPS (run `setup.sh` to set up TLS certs)
 - On iOS, use Safari — Chrome on iOS has limited mic support
 - Check that you granted microphone permission when prompted
+
+**"Mic error: undefined is not an object (evaluating 'navigator.mediaDevices.getUserMedia')"**
+- You're on plain HTTP. Browsers only expose the mic on secure contexts (HTTPS or localhost).
+- The URL bar will say "Not Secure" — that's the giveaway.
+- Fix: enable HTTPS. Check the server logs for `Could not generate TLS certs — running HTTP only`.
+  - Install the Tailscale brew CLI (the Mac App Store version is sandboxed and can't generate certs): `brew install tailscale`
+  - Enable **MagicDNS** and **HTTPS Certificates** in the [Tailscale admin console](https://login.tailscale.com/admin/dns)
+  - Restart TailWispr — it will auto-generate the cert and print an `https://` URL
 
 **Audio is choppy or has gaps**
 - Check your Tailscale connection quality
@@ -141,8 +150,13 @@ You also need the Tailscale CLI installed (`brew install tailscale`) — the Mac
 - Keep the screen on while streaming — the app requests a Wake Lock, but iOS may still suspend it
 - Consider using Guided Access (Settings → Accessibility → Guided Access) to prevent sleep
 
-**Server won't start**
-- Check that nothing else is using port 3000: `lsof -i :3000`
+**Server won't start — `EADDRINUSE` / port already in use**
+- Another TailWispr (or dev server) is probably still running in another terminal or backgrounded.
+- Find it: `lsof -i :3000`
+- Stop it: `kill <PID>` (or just close the other terminal / press `q` there)
+- Or run on a different port: `TAILWISPR_PORT=3001 npm start`
+
+**Server won't start — other errors**
 - Make sure `ffmpeg` is installed: `which ffmpeg`
 
 ## Under the Hood

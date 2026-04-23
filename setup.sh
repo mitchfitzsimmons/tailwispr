@@ -120,7 +120,12 @@ if [ "$OS" = "Darwin" ]; then
     echo "    — or —"
     echo -e "    Download from: ${CYAN}https://existential.audio/blackhole/${NC}"
     echo ""
-    info "After installing, run this setup again:"
+    info "Already installed? macOS may not have loaded the driver yet."
+    info "Reload CoreAudio (briefly cuts audio for ~1s):"
+    echo -e "    ${CYAN}sudo killall coreaudiod${NC}"
+    info "If that doesn't surface it, a full reboot will."
+    echo ""
+    info "Then run this setup again:"
     echo -e "    ${CYAN}bash setup.sh${NC}"
     echo ""
     exit 1

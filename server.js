@@ -60,6 +60,24 @@ const server = createServer(config);
 // Attach WebSocket handler
 const wss = attachWebSocket(server, config, audioPipeline, platform, triggerWispr);
 
+// Friendly message instead of an unhandled 'error' stack trace
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    log.info('');
+    log.info(`  ✗ Port ${config.port} is already in use.`);
+    log.info('');
+    log.info(`  Likely another TailWispr (or dev server) is still running.`);
+    log.info(`  Find it:  lsof -i :${config.port}`);
+    log.info(`  Stop it:  kill <PID>   (or close the other terminal)`);
+    log.info('');
+    log.info(`  Or run on a different port:`);
+    log.info(`    TAILWISPR_PORT=3001 npm start`);
+    log.info('');
+    process.exit(1);
+  }
+  throw err;
+});
+
 // Start listening
 server.listen(config.port, () => {
   const protocol = server._isTLS ? 'https' : 'http';

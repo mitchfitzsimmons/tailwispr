@@ -182,6 +182,20 @@
   });
 
   async function startStreaming() {
+    // Browsers only expose navigator.mediaDevices on secure contexts (HTTPS or localhost).
+    // On iOS Safari over plain HTTP it's simply undefined, which produced a cryptic
+    // "undefined is not an object (evaluating 'navigator.mediaDevices.getUserMedia')".
+    if (!window.isSecureContext || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setConnectionStatus(
+        'error',
+        'Mic needs HTTPS — enable Tailscale HTTPS and reload. See README.'
+      );
+      console.error(
+        '[audio] Insecure context — navigator.mediaDevices unavailable. ' +
+        'Open via https:// using a Tailscale cert, or use localhost.'
+      );
+      return;
+    }
     try {
       micStream = await navigator.mediaDevices.getUserMedia({
         audio: {
